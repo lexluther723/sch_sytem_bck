@@ -5,9 +5,6 @@ classes, subjects, teacher assignments, timetable, attendance, exams and
 results, fees with M-Pesa payments, announcements, notifications,
 dashboards and reports.
 
-> **Status:** in development, not yet launched.
-> See `CHANGELOG_FIXES.md` for what was recently repaired, and run
-> `./verify.sh` before trusting anything.
 
 ## Quick start
 
