@@ -491,7 +491,7 @@ def UserDetail(request, id):
 # UPDATE USER
 # ============================================================
 
-@api_view(["PUT"])
+@api_view(["PUT", "PATCH"])
 @permission_classes([IsAuthenticated])
 @transaction.atomic
 def UpdateUser(request, id):

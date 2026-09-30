@@ -183,11 +183,54 @@ class TeacherAssignmentListView(generics.ListAPIView):
         return TeacherAssignment.objects.none()
 
 
+# # ============================================================
+# # ASSIGNMENT DETAIL
+# # ============================================================
+
+# class TeacherAssignmentDetailView(generics.RetrieveAPIView):
+
+#     queryset = (
+#         TeacherAssignment.objects
+#         .select_related(
+#             "teacher__user",
+#             "classroom",
+#             "subject",
+#         )
+#     )
+
+#     serializer_class = TeacherAssignmentSerializer
+
+#     permission_classes = [
+#         IsAdminOrAcademicCoordinator
+#     ]
+
+
+# # ============================================================
+# # ASSIGNMENT UPDATE
+# # ============================================================
+
+# class TeacherAssignmentUpdateView(generics.UpdateAPIView):
+
+#     queryset = TeacherAssignment.objects.all()
+
+#     serializer_class = TeacherAssignmentSerializer
+
+#     permission_classes = [
+#         IsAdminOrAcademicCoordinator
+#     ]
+
 # ============================================================
 # ASSIGNMENT DETAIL
 # ============================================================
 
-class TeacherAssignmentDetailView(generics.RetrieveAPIView):
+class TeacherAssignmentDetailView(generics.RetrieveUpdateAPIView):
+    """
+    GET   /api/assignments/<id>/  → retrieve
+    PUT   /api/assignments/<id>/  → full update
+    PATCH /api/assignments/<id>/  → partial update (e.g. change classroom)
+
+    Also available at /api/assignments/update/<id>/ for backward compatibility.
+    """
 
     queryset = (
         TeacherAssignment.objects
@@ -206,12 +249,19 @@ class TeacherAssignmentDetailView(generics.RetrieveAPIView):
 
 
 # ============================================================
-# ASSIGNMENT UPDATE
+# ASSIGNMENT UPDATE (legacy path — kept for existing clients)
 # ============================================================
 
 class TeacherAssignmentUpdateView(generics.UpdateAPIView):
 
-    queryset = TeacherAssignment.objects.all()
+    queryset = (
+        TeacherAssignment.objects
+        .select_related(
+            "teacher__user",
+            "classroom",
+            "subject",
+        )
+    )
 
     serializer_class = TeacherAssignmentSerializer
 
@@ -219,6 +269,7 @@ class TeacherAssignmentUpdateView(generics.UpdateAPIView):
         IsAdminOrAcademicCoordinator
     ]
 
+    http_method_names = ["put", "patch", "options", "head"]
 
 # ============================================================
 # ASSIGNMENT DELETE

@@ -48,7 +48,22 @@ class ClassRoomListView(generics.ListAPIView):
     ]
 
 
-class ClassRoomDetailView(generics.RetrieveAPIView):
+# class ClassRoomDetailView(generics.RetrieveAPIView):
+#     queryset = ClassRoom.objects.select_related(
+#         "class_teacher",
+#         "class_teacher__user",
+#     ).annotate(
+#         student_count=Count("students", distinct=True),
+#     )
+
+#     serializer_class = ClassRoomSerializer
+#     permission_classes = [IsAuthenticated]
+
+class ClassRoomDetailView(generics.RetrieveUpdateAPIView):
+    """
+    GET/PUT/PATCH /api/classes/<id>/
+    Update also available at /api/classes/update/<id>/.
+    """
     queryset = ClassRoom.objects.select_related(
         "class_teacher",
         "class_teacher__user",
@@ -58,6 +73,12 @@ class ClassRoomDetailView(generics.RetrieveAPIView):
 
     serializer_class = ClassRoomSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        # Anyone authenticated can read; only admin/coordinator can update
+        if self.request.method in ("PUT", "PATCH"):
+            return [IsAdminOrAcademicCoordinator()]
+        return [IsAuthenticated()]
 
 
 class ClassRoomCreateView(generics.CreateAPIView):
